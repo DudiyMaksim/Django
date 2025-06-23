@@ -16,11 +16,27 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users:index' %}">Головна</a>
+                        <a class="nav-link" href="{% url 'users:users' %}">Користувачі</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users:register' %}">Користувачі</a>
-                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item d-flex align-items-center">
+                            <span class="text-white me-2">{{ user.username }}</span>
+                            {% if user.image %}
+                                <img src="{{ user.image.url }}" alt="Аватар" width="40" height="40" class="rounded-circle">
+                            {% else %}
+                                <img src="https://via.placeholder.com/40" alt="Аватар" width="40" height="40" class="rounded-circle">
+                            {% endif %}
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:login' %}">Вхід</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:register' %}">Реєстрація</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

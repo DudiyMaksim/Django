@@ -3,6 +3,8 @@ from .utils import optimize_image
 from .forms import CustomUserCreationForm
 from django.contrib import messages
 from .models import CustomUser
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm
 
 # Create your views here.
 def register(request):
@@ -32,5 +34,28 @@ def register(request):
     return render(request, 'register.html', {'form': form})
 
 def index(request):
+    form = CustomUser.objects.all()
+    return render(request, 'home.html', {'form': form})
+
+def users(request):
     users = CustomUser.objects.all()
     return render(request, 'users.html', {'users': users})
+
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        username = request.POST['username']  # або як називається поле у формі
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')  # або інша сторінка після входу
+        else:
+            messages.error(request, 'Невірний логін або пароль')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('users:index')  # або на головну, якщо хочеш
